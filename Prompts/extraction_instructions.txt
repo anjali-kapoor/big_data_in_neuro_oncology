@@ -1,0 +1,260 @@
+Neuro-Oncology Dataset Analytics — Data Extraction
+
+Extract structured fields from the title and abstract only. Multi-select fields may include more than one category per study.
+
+Return a JSON object matching the provided schema.
+
+==================================================================================
+BASIC METADATA
+==================================================================================
+
+title: Full paper title (max 500 chars)
+
+year: Publication year (e.g., "2024")
+
+journal: Journal name (max 200 chars)
+
+==================================================================================
+STUDY TYPE  (single-select: study_type)
+==================================================================================
+
+methodological — Novel method, algorithm, or framework development.
+
+clinical_prediction — Clinical prediction model for patient outcomes.
+
+biomarker_or_translational_analysis — Molecular, genomic, or expression-based association studies examining prognostic or mechanistic relationships without building a predictive model.
+
+epidemiologic_analysis — Registry or cohort-based statistical analysis (incidence, prevalence, survival, risk factors, trend analysis) without development of a novel predictive model.
+
+benchmark_challenge — Benchmark dataset or challenge participation.
+
+clinical_trial_analysis — Analysis of patient outcomes within a defined clinical trial cohort (Phase I–III), including response, survival, toxicity, or treatment-related effects.
+
+dataset_description — Dataset creation, curation, or description.
+
+narrative_review — Review, perspective, or commentary (rare after screening).
+
+unclear — Study type cannot be determined from the abstract.
+
+==================================================================================
+TASK TYPE  (single-select: task_type)
+==================================================================================
+
+segmentation — Tumor or region segmentation.
+
+detection — Lesion or feature detection.
+
+classification — Categorical prediction (tumor type, grade, subtype) not primarily focused on molecular alterations.
+
+survival_prediction — Development or evaluation of a predictive model estimating individual OS or time-to-event outcomes using ML/DL or multivariable modeling with formal internal validation (train/test split or cross-validation). Distinct from molecular_association by the presence of predictive validation.
+
+molecular_association — Statistical survival association (KM, Cox, LASSO) without formal predictive validation.
+
+progression_or_recurrence — Disease progression or recurrence prediction.
+
+epidemiologic_modeling — Cohort- or registry-based statistical analysis of incidence, prevalence, survival rates, or risk factors without development of an individual-level predictive model.
+
+treatment_response — Response to therapy prediction.
+
+molecular_prediction — Molecular alteration inference (IDH, MGMT, 1p/19q, etc.).
+
+translational_bioinformatics — Computational analysis of molecular/omics data (differential expression, pathway enrichment, immune infiltration, KM/Cox survival association) aimed at biological insight or biomarker discovery without validation of an individual-level predictive model.
+
+unsupervised_subtyping — Unsupervised clustering or representation learning (k-means, NMF, hierarchical clustering, autoencoders) to identify latent tumor subtypes or molecular groups without predefined outcome labels.
+
+unclear — Task type cannot be determined from the abstract.
+
+==================================================================================
+OUTCOMES MODELED  (multi-select: outcomes_modeled)
+==================================================================================
+
+Select ALL categories explicitly modeled (statistical testing, prediction, or survival analysis—not background mention).
+
+survival — Time-to-death outcome: overall survival (OS), cause-specific survival (CSS), disease-specific survival (DSS), or tumor-specific mortality.
+
+progression_free_survival — Progression-free survival (PFS), time to progression (TTP), or time to treatment failure.
+
+incidence_or_prevalence — Population-level incidence, prevalence, temporal trends, geographic variation, or epidemiologic burden.
+
+tumor_characteristic — Intrinsic tumor properties: grade, histologic type, molecular subtype, genomic alteration, copy number, methylation class, mutational burden, immune infiltration, or other biological tumor features.
+
+metastasis — Presence, risk, timing, or anatomical pattern of metastatic disease.
+
+recurrence — Tumor recurrence or recurrence risk: RFS, time to recurrence, local vs. distant recurrence, or predictors of relapse after initial treatment.
+
+response — Treatment response: radiographic (RECIST), pathological, molecular, therapy resistance, radiosensitivity, chemosensitivity, or biomarker-predicted treatment benefit.
+
+functional_outcome — Patient functional or neurological performance: disability scales (mRS, KPS, ECOG), neurocognitive performance, motor/language deficits, seizure burden, ADLs, or other clinical neurological outcomes.
+
+quality_of_life — Patient-reported QOL: validated instruments (EORTC QLQ, FACT-Br), symptom burden, psychosocial well-being, fatigue, pain, or global health perception.
+
+complications — Treatment-related adverse events, perioperative morbidity, toxicity grading (CTCAE), hospital-acquired conditions, or surgical/medical complications.
+
+cost_utilization — Healthcare costs, resource utilization, hospital length of stay, readmission rates, insurance claims, or cost-effectiveness.
+
+none_or_not_applicable — No clinical or patient-level outcome modeled (e.g., pure segmentation, method development, tool validation without outcome linkage).
+
+==================================================================================
+DATASETS USED  (datasets_used)
+==================================================================================
+
+For each dataset:
+
+raw_name — As mentioned in the paper (max 200 chars).
+
+dataset_used_standardized — Match to the TARGET DATASET LIST below, or "other" if not listed.
+
+TARGET DATASETS (use abbreviated standardized form):
+  SEER, CBTRUS, TCGA, TARGET, REMBRANDT, GENIE, CancerLinQ, PBTC, Children’s Oncology Group,
+  Children’s Brain Tumor Network, PDX Brain Tumor National Resource, BraTS, BRISC, UCSF-PDGM,
+  NYUMets, GLASS, IvyGAP, Yale-Brain-Mets-Longitudinal Dataset, BrainMetShare
+
+role — Dataset role:
+  primary — Main dataset for analysis.
+  secondary — Validation, comparison, or supplementary analysis.
+  unclear — Role cannot be determined from the abstract.
+
+==================================================================================
+MODEL CLASS  (single-select: model_class)
+==================================================================================
+
+traditional_ml — Classical statistical or ML: Cox, Kaplan–Meier, log-rank, nomogram, LASSO/ridge/elastic net, logistic regression, SVM, random forest, gradient boosting. Includes purely statistical survival modeling without neural networks.
+
+deep_learning — Neural networks, CNNs, transformers, and other deep learning architectures.
+
+foundation_model — Pre-trained foundation model (e.g., SAM, GPT, CLIP-based).
+
+hybrid — Combination of traditional ML and deep learning.
+
+unclear — Model class cannot be determined from the abstract.
+
+==================================================================================
+MODALITIES USED  (multi-select: modalities_used)
+==================================================================================
+
+imaging — Radiologic imaging data (MRI, CT, PET, radiomics-derived features).
+
+pathology — Histopathology including digital whole-slide images or morphologic features from tissue slides.
+
+omics — High-throughput molecular profiling: genomics, transcriptomics, epigenomics, proteomics, metabolomics (e.g., TCGA-style datasets).
+
+clinical_structured — Patient-level structured clinical variables: demographics, comorbidities, labs, treatments, staging, outcomes.
+
+clinical_text — Unstructured clinical narratives: progress notes, operative reports, pathology reports, radiology reports.
+
+experimental_preclinical — In vitro or in vivo experimental data: cell lines, organoids, xenografts, animal models, functional assays, drug sensitivity testing.
+
+registry_or_administrative — Population registries, claims data, trial registries, bibliometric/publication metadata.
+
+other — Data types not captured above.
+
+==================================================================================
+VALIDATION LEVEL  (single-select: validation_level)
+==================================================================================
+
+Rules: External implies internal. Prospective implies internal. Prospective does NOT imply external.
+
+none — No internal, external, or prospective validation reported.
+
+internal_only — Internal validation only (cross-validation, train-test split, bootstrap, hold-out). No external or prospective validation.
+
+internal_and_external — Internal + validation on an independent external dataset. No prospective validation.
+
+internal_and_prospective — Internal + prospective or temporal validation. Does not imply external validation.
+
+internal_and_external_and_prospective — Internal, external, and prospective/temporal validation all performed.
+
+unclear — Validation level cannot be determined from the abstract.
+
+==================================================================================
+LONGITUDINAL TIER  (longitudinal_use.longitudinal_tier)
+==================================================================================
+
+0 — Cross-sectional. Single timepoint inputs per patient. Outcomes treated as static labels (e.g., grade, subtype, mutation status). Does not include survival analysis, follow-up time reporting, or registry-based outcome statistics.
+
+1 — Longitudinal outcomes only. Outcome involves time-to-event (OS, PFS, RFS). Inputs are static baseline features only. Includes Kaplan–Meier, Cox regression with baseline covariates, registry survival analysis, and clinical trial survival reporting.
+
+2 — Limited longitudinal inputs. ≥2 timepoints per patient used as model inputs, treated as features (flattened), not as ordered sequence. No explicit temporal modeling architecture. Example: baseline + 3-month MRI → response classification.
+
+3 — True longitudinal modeling. Explicit modeling of temporal sequence structure; time ordering is modeled directly. Examples: RNN/LSTM/temporal transformer on serial MRIs, tumor growth curve modeling, joint longitudinal-survival models, mixed-effects longitudinal modeling.
+
+==================================================================================
+NEURO-ONCOLOGY DOMAIN  (neuro_oncology_domain)
+==================================================================================
+
+neuro_onc_domain — Age / population:
+  adult — Focuses on adult patients (≥18 years). If a primary CNS tumor type is mentioned without explicit restriction to pediatric-only, classify as adult.
+  pediatric — Focuses exclusively on pediatric patients (<18 years).
+  mixed_age — Includes both adult and pediatric populations.
+  unclear — Age population not specified or cannot be determined.
+
+primary_vs_metastatic — Tumor origin:
+  primary_cns — Primary tumors arising from the CNS (brain, spinal cord, meninges, cranial nerves, sellar region).
+  metastatic_to_cns — Secondary tumors metastasizing to the CNS (brain, spine, or leptomeninges).
+  both — Includes both primary CNS tumors and metastatic disease.
+  unclear — Tumor origin not specified or cannot be determined.
+
+compartment — Anatomical compartment:
+  intra_axial — Within brain parenchyma.
+  extra_axial — Outside brain parenchyma (meninges, skull base).
+  intraventricular — Within ventricles.
+  sellar_suprasellar — Sellar/suprasellar region.
+  cranial_nerve — Cranial nerve tumors.
+  spinal — Spinal cord/column.
+  leptomeningeal — Leptomeningeal disease.
+  mixed — Multiple compartments.
+  unclear — Anatomical compartment not specified or cannot be determined.
+
+who_family — WHO tumor family:
+  gliomas_glioneuronal_neuronal — Gliomas, glioneuronal, and neuronal tumors.
+  ependymal — Ependymal tumors.
+  choroid_plexus — Choroid plexus tumors.
+  embryonal — Embryonal tumors (medulloblastoma, etc.).
+  pineal — Pineal region tumors.
+  cranial_paraspinal_nerve — Nerve sheath tumors.
+  meningiomas — Meningeal tumors.
+  mesenchymal_non_meningothelial — Mesenchymal non-meningothelial tumors.
+  melanocytic — Melanocytic tumors.
+  hematolymphoid — Lymphomas and hematopoietic tumors.
+  germ_cell — Germ cell tumors.
+  sellar_region — Pituitary adenomas, craniopharyngiomas.
+  metastases_to_cns — Metastatic disease to CNS.
+  mixed — Multiple tumor types.
+  unclear — WHO tumor family not specified or cannot be determined.
+
+==================================================================================
+FUZZY CATEGORY REASONING  (fuzzy_category_reasoning)
+==================================================================================
+
+When you select unclear or mixed for any field above, or modalities_used includes other, add ONE sentence explaining why (for auditing). Leave empty if no such category applies.
+
+==================================================================================
+EXAMPLE (structure only)
+==================================================================================
+
+{
+  "title": "...",
+  "year": "2024",
+  "journal": "Neuro-Oncology",
+  "study_type": "clinical_prediction",
+  "datasets_used": [
+    {
+      "raw_name": "BraTS 2021",
+      "dataset_used_standardized": "BraTS",
+      "role": "primary"
+    }
+  ],
+  "task_type": "segmentation",
+  "outcomes_modeled": ["survival"],
+  "model_class": "deep_learning",
+  "modalities_used": ["imaging"],
+  "validation_level": "internal_only",
+  "longitudinal_use": { "longitudinal_tier": "1" },
+  "neuro_oncology_domain": {
+    "neuro_onc_domain": "adult",
+    "primary_vs_metastatic": "primary_cns",
+    "compartment": "intra_axial",
+    "who_family": "gliomas_glioneuronal_neuronal"
+  },
+  "fuzzy_category_reasoning": ""
+}

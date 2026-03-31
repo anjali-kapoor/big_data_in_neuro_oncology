@@ -1,0 +1,49 @@
+# Target Datasets for Screening
+
+# Add your target datasets here, one per line
+# The LLM will check if papers mention using these specific datasets
+
+# Cancer Registries
+SEER (Surveillance, Epidemiology, and End Results)
+TCGA (The Cancer Genome Atlas)
+ICGC (International Cancer Genome Consortium)
+cBioPortal
+GDC (Genomic Data Commons)
+
+# Clinical Databases
+MIMIC (Medical Information Mart for Intensive Care)
+eICU Collaborative Research Database
+UK Biobank
+All of Us Research Program
+eMERGE (Electronic Medical Records and Genomics)
+ClinVar
+dbGaP
+
+# Imaging Databases
+TCIA (The Cancer Imaging Archive)
+ADNI (Alzheimer's Disease Neuroimaging Initiative)
+OASIS (Open Access Series of Imaging Studies)
+fastMRI
+UK Biobank Imaging
+
+# Population Health
+NHANES (National Health and Nutrition Examination Survey)
+BRFSS (Behavioral Risk Factor Surveillance System)
+NHIS (National Health Interview Survey)
+Medicare Claims
+Medicaid Claims
+
+# Genomics & Molecular
+gnomAD (Genome Aggregation Database)
+1000 Genomes Project
+GTEx (Genotype-Tissue Expression)
+ENCODE
+PDB (Protein Data Bank)
+UniProt
+
+# Add more datasets as needed...
+
+# Notes:
+# - Include common abbreviations and full names
+# - Be specific enough to distinguish from incidental mentions
+# - Update screening instructions to reference this list

@@ -1,0 +1,28 @@
+# Data and intermediates (never commit)
+*.jsonl
+*.csv
+*.ris
+# Raw PubMed / abstract dumps (keep Prompts/*.txt and requirements.txt)
+*.txt
+!Prompts/*.txt
+!requirements.txt
+
+# Batch API artifacts
+Batch Responses/
+screening_batch_requests.jsonl
+data_extraction_batch_requests.jsonl
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Reports produced locally
+reports/

@@ -1,0 +1,189 @@
+Dataset Analytics Paper Screening Instructions
+
+TASK
+Decide whether a study performs analytical use of specific datasets based on its title and abstract, according to detailed criteria. Base your decision only on the title and abstract. If insufficient information is available, mark as unclear.
+
+OUTPUT FORMAT
+Return a JSON object with the following fields:
+- title: The paper title
+- year: Publication year if available in the title or abstract, otherwise null
+- dataset: List of dataset names from the target dataset list mentioned in the study. If none are mentioned, return an empty list.
+- analytical_use_of_dataset: "yes", "no", or "unclear"
+- reasoning: Brief explanation of the decision (maximum 300 characters)
+- exclusion_reason: Required only if analytical_use_of_dataset is "no" or "unclear". Must match one of the exclusion categories below.
+
+==================================================================================
+INCLUSION CRITERIA
+==================================================================================
+
+Include a study (analytical_use_of_dataset: "yes") if ALL of the following apply:
+
+1. The study uses one or more datasets from the target dataset list (see list below)
+2. AND the study performs cohort-level quantitative or computational analysis using dataset-derived variables
+
+Examples of analytical use include:
+- Statistical analyses such as regression, survival analysis, epidemiologic analysis, or trend analysis performed on dataset cohorts
+- Machine learning, artificial intelligence, or computational modeling trained or evaluated using data from the target datasets
+- Radiomics, imaging analysis, or quantitative computational analysis performed on images originating from target datasets
+- Any study where the dataset is directly analyzed to generate quantitative or computational results
+
+Note: Dataset names may appear in abbreviated or expanded form (e.g., "SEER database", "TCGA cohort", "BraTS challenge data")
+
+==================================================================================
+EXCLUSION CRITERIA
+==================================================================================
+
+Mark analytical_use_of_dataset: "no" for the following exclusion categories:
+
+1. biospecimen_only
+Dataset used only as a source of biological specimens (tissue, cell lines, organoids, PDX models) without cohort-level analysis of dataset variables.
+
+2. wet_lab_only
+Primarily laboratory or preclinical experiments where dataset mention is incidental and not analyzed computationally.
+
+3. molecular_profiling_without_cohort_analysis
+Studies performing molecular profiling, genomic analysis, or laboratory assays on samples originating from a dataset (e.g., TCGA-derived samples) without cohort-level statistical or computational analysis of dataset variables.
+
+4. narrative_or_commentary
+Narrative review, editorial, perspective, commentary, or survey without original dataset analysis.
+
+5. descriptive_only
+Dataset used only to describe a small number of cases without statistical or computational analysis.
+
+6. methods_or_dataset_paper
+Dataset creation, curation, annotation, or challenge overview paper without downstream cohort-level analysis.
+
+7. dataset_mentioned_but_not_analyzed
+Dataset is cited or mentioned but not directly analyzed to produce study results.
+
+8. dataset_not_in_target_list
+Study analyzes datasets that are not included in the provided target dataset list.
+
+Mark analytical_use_of_dataset: "unclear" for:
+
+9. unclear_from_abstract
+The abstract does not provide sufficient information to determine dataset usage or analysis type.
+
+==================================================================================
+TARGET DATASETS
+==================================================================================
+
+Only include studies that use one or more of these specific datasets:
+
+- Surveillance, Epidemiology, and End Results Program (SEER)
+- Central Brain Tumor Registry of the United States (CBTRUS)
+- The Cancer Genome Atlas (TCGA)
+- Therapeutically Applicable Research to Generate Effective Treatments (TARGET)
+- REpository for Molecular BRAin Neoplasia DaTa (REMBRANDT)
+- AACR Project GENIE
+- ASCO CancerLinQ
+- Pediatric Brain Tumor Consortium (PBTC)
+- Children's Oncology Group
+- Children's Brain Tumor Network
+- PDX Brain Tumor National Resource
+- Brain Tumor Segmentation Challenge (BraTS)
+- BRISC
+- UCSF-PDGM
+- NYUMets
+- GLASS Consortium
+- IVY Glioblastoma Atlas Project
+- Yale-Brain-Mets-Longitudinal Dataset
+- BrainMetShare
+
+Note: These datasets may appear with abbreviations or slight variations in naming.
+
+==================================================================================
+EXAMPLES - EXCLUDED STUDIES
+==================================================================================
+
+Example 1: biospecimen_only
+Title: "Establishment of glioma cell lines derived from TCGA tumor samples"
+Decision: analytical_use_of_dataset = "no"
+Exclusion reason: biospecimen_only
+Reasoning: Uses TCGA only as source for biological specimens, no cohort-level analysis
+
+Example 2: narrative_or_commentary
+Title: "Review of machine learning applications in neuro-oncology datasets"
+Decision: analytical_use_of_dataset = "no"
+Exclusion reason: narrative_or_commentary
+Reasoning: Review article without original dataset analysis
+
+Example 3: methods_or_dataset_paper
+Title: "The Cancer Genome Atlas: A resource for future cancer research"
+Decision: analytical_use_of_dataset = "no"
+Exclusion reason: methods_or_dataset_paper
+Reasoning: Dataset description paper without downstream cohort analysis
+
+Example 4: dataset_mentioned_but_not_analyzed
+Title: "Case report of a rare glioblastoma variant referencing TCGA"
+Decision: analytical_use_of_dataset = "no"
+Exclusion reason: dataset_mentioned_but_not_analyzed
+Reasoning: TCGA mentioned for reference only, not analyzed
+
+Example 5: wet_lab_only
+Title: "Molecular characterization of glioma samples using laboratory assays"
+Decision: analytical_use_of_dataset = "no"
+Exclusion reason: wet_lab_only
+Reasoning: Laboratory experiments without computational cohort analysis
+
+==================================================================================
+EXAMPLES - INCLUDED STUDIES
+==================================================================================
+
+Example 1:
+Title: "Survival analysis of glioblastoma patients using TCGA data"
+Decision: analytical_use_of_dataset = "yes"
+Reasoning: Performs cohort-level statistical analysis using TCGA dataset
+
+Example 2:
+Title: "Machine learning prediction of overall survival using SEER registry data"
+Decision: analytical_use_of_dataset = "yes"
+Reasoning: Computational modeling using dataset-derived variables
+
+Example 3:
+Title: "Radiomic prediction of tumor grade using BraTS challenge data"
+Decision: analytical_use_of_dataset = "yes"
+Reasoning: Quantitative imaging analysis using dataset images
+
+Example 4:
+Title: "Population-level trends in brain metastases using SEER database"
+Decision: analytical_use_of_dataset = "yes"
+Reasoning: Epidemiologic analysis performed on dataset cohort
+
+Example 5:
+Title: "Deep learning model for glioma classification trained on TCGA and BraTS datasets"
+Decision: analytical_use_of_dataset = "yes"
+Reasoning: Machine learning analysis directly using target datasets
+
+==================================================================================
+DECISION WORKFLOW
+==================================================================================
+
+For each study:
+
+1. Check if any target datasets are mentioned
+   - If NO datasets mentioned → exclusion_reason: "dataset_not_in_target_list" or "unclear_from_abstract"
+   - If YES, proceed to step 2
+
+2. Determine what was done with the dataset
+   - Cohort-level quantitative/computational analysis? → "yes"
+   - Only specimens obtained? → exclusion_reason: "biospecimen_only"
+   - Only laboratory experiments? → exclusion_reason: "wet_lab_only"
+   - Molecular profiling without cohort analysis? → exclusion_reason: "molecular_profiling_without_cohort_analysis"
+   - Review/commentary? → exclusion_reason: "narrative_or_commentary"
+   - Just describing cases? → exclusion_reason: "descriptive_only"
+   - Dataset creation paper? → exclusion_reason: "methods_or_dataset_paper"
+   - Just mentioned/cited? → exclusion_reason: "dataset_mentioned_but_not_analyzed"
+   - Can't tell from abstract? → analytical_use_of_dataset: "unclear", exclusion_reason: "unclear_from_abstract"
+
+3. Provide reasoning (max 300 characters)
+
+==================================================================================
+IMPORTANT REMINDERS
+==================================================================================
+
+- Base decisions ONLY on the title and abstract provided
+- Be conservative - if unclear, mark as "unclear" rather than guessing
+- Dataset names may appear in various forms (full name, abbreviation, with/without year)
+- Cohort-level analysis means statistical or computational analysis of multiple subjects/samples, not just molecular characterization
+- When in doubt about whether analysis is "cohort-level", consider: Is there statistical inference, modeling, or quantitative aggregation across multiple subjects?
