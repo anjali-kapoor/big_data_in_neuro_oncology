@@ -86,16 +86,15 @@ Step-by-step description (including paths and batch commands) is in **`documenta
 
 ## Push to GitHub
 
-From this directory (after you review and optionally amend files):
+This folder is already a git repository with an initial commit on **`main`**. After you add a remote:
 
 ```bash
-git commit -m "Initial publication pipeline snapshot"
-git branch -m main
+cd publication_code   # or the path where you keep this clone
 git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
 git push -u origin main
 ```
 
-Create an empty repository on GitHub first (no README/license if you are pushing an existing history), or use `gh repo create`. The repo was initialized locally with `.git/` already present in `publication_code/`.
+Create an empty repository on GitHub first (no README/license if you are pushing this existing history), or use `gh repo create`. If you copied only the files without `.git`, run `git init` and `git add` / `git commit` once, then add the remote.
 
 Before screening/extraction downloads, create the batch output folder once:
 
