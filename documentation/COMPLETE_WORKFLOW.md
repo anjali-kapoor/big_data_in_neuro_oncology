@@ -256,8 +256,7 @@ project/
 │   └── ...
 │
 ├── Prompts/
-│   ├── dataset_screening_instructions.txt
-│   ├── target_datasets.txt
+│   ├── dataset_screening_instructions.txt   # includes TARGET DATASETS list
 │   └── extraction_instructions.txt
 │
 ├── Batch Responses/                     # Create this folder
@@ -303,8 +302,7 @@ If you already have `all_references_without_duplicates.csv`:
 # 1. Convert to JSONL
 python 0_csv_to_jsonl.py
 
-# 2. Customize your datasets
-edit Prompts/target_datasets.txt
+# 2. (Optional) Edit TARGET DATASETS in Prompts/dataset_screening_instructions.txt
 
 # 3. Run screening
 python screening_1_prepare_batch.py

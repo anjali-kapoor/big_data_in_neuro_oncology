@@ -11,7 +11,7 @@ This repository intentionally **excludes**: plotting scripts, auxiliary experime
 | Stage | Contents |
 |--------|----------|
 | **Preprocessing** | `preprocessing/` — PubMed→RIS, RIS dedup to CSV, optional term filter; `main_workflow/0_csv_to_jsonl.py` — CSV → JSONL for screening |
-| **Screening** | `screening_1_prepare_batch.py`, `screening_2_process_results.py`, `Prompts/dataset_screening_instructions.txt`, `Prompts/target_datasets.txt` |
+| **Screening** | `screening_1_prepare_batch.py`, `screening_2_process_results.py`, `Prompts/dataset_screening_instructions.txt` (includes the **TARGET DATASETS** list) |
 | **Extraction** | `extraction_1_prepare_batch.py`, `extraction_2_process_results.py`, `Prompts/extraction_instructions.txt`, `schemas.py` |
 | **Batch API** | `batch_api_helpers.py` — submit, wait, download OpenAI Batch jobs |
 | **Analysis** | `analyze_extraction_by_dataset.py` (text report), `dataset_diversity_analysis.py` (entropy metrics to stdout) |
@@ -73,7 +73,7 @@ python main_workflow/dataset_diversity_analysis.py
 
 ## Configuration
 
-- Edit **`Prompts/target_datasets.txt`** before screening so the model knows which registry/clinical/omics resources count as in-scope “datasets” for your review.
+- Edit the **TARGET DATASETS** section in **`Prompts/dataset_screening_instructions.txt`** if you need to change which resources count as in-scope (that file is what `screening_1_prepare_batch.py` loads; it is not merged from a separate list file).
 - Model IDs and reasoning effort are set in the `*_prepare_batch.py` scripts (defaults match the original project; change if you cite a different model in the paper).
 
 ## Schema
