@@ -1,6 +1,6 @@
 # Preprocessing
 
-Scripts for converting bibliographic exports to RIS (if needed), merging and deduplicating references, and optional term-based filtering of PubMed text dumps.
+Scripts for converting bibliographic exports to RIS (if needed) and merging/deduplicating references.
 
 ## Scripts
 
@@ -8,7 +8,6 @@ Scripts for converting bibliographic exports to RIS (if needed), merging and ded
 |--------|------|
 | `pubmedToRis.py` | Converts PubMed plain-text exports to RIS (usage: see module docstring). |
 | `ris_import_deduplicate.py` | Reads `pubmed_txt/*.ris`, merges records, filters to complete entries, deduplicates, writes CSV (and combined RIS) in this directory. **Run from `preprocessing/`.** |
-| `pubmed_txt/extract_abstracts_by_terms.py` | Optional: extract lines matching search terms from large text files. |
 
 ## Typical sequence
 

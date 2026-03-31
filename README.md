@@ -1,8 +1,8 @@
 # Neuro-oncology literature pipeline — supplementary code
 
-This repository supports reproducibility of the methods in the associated publication: processing bibliographic records through **deduplication**, **LLM-based screening** for analytical use of prespecified data resources, **structured extraction** with schema-validated outputs, and **optional summary analyses**.
+This code was developed for and used in a **narrative review of Big Data in Neuro-Oncology**. It provides a reproducible pattern for **automated LLM screening and structured extraction** of bibliographic records—typically titles and abstracts from PubMed or similar exports—at scale via batch APIs, with inclusion rules and extraction fields defined in prompts and Pydantic schemas. The same workflow can be adapted to other review questions or disease areas by editing those prompts and models.
 
-Primary corpora (bibliographic exports, JSONL study files, and model API responses) are **not** included; reviewers can inspect program logic, prompts, and schemas here.
+This repository supports reproducibility of those methods: processing bibliographic records through **deduplication**, **LLM-based screening** for analytical use of prespecified data resources, **structured extraction** with schema-validated outputs, and **optional summary analyses**.
 
 ## Pipeline (high level)
 
@@ -11,7 +11,7 @@ Primary corpora (bibliographic exports, JSONL study files, and model API respons
 | **Preprocessing** | Import references (e.g., PubMed/RIS), deduplicate, normalize to JSONL. |
 | **Screening** | Classify whether each abstract describes cohort-level analytical use of a target dataset (rules and allowlist in `Prompts/dataset_screening_instructions.txt`). |
 | **Extraction** | For included studies, fill structured fields defined in `main_workflow/schemas.py` under instructions in `Prompts/extraction_instructions.txt`. |
-| **Analysis** | Optional scripts: per-dataset summary tables (`analyze_extraction_by_dataset.py`); diversity metrics (`dataset_diversity_analysis.py`). |
+| **Analysis** | Optional: per-dataset summary tables (`analyze_extraction_by_dataset.py`). |
 
 ## Layout
 
@@ -20,7 +20,6 @@ Primary corpora (bibliographic exports, JSONL study files, and model API respons
 | `preprocessing/` | Reference import and deduplication scripts |
 | `main_workflow/` | Screening and extraction batch preparation, result merging, schemas, batch API helper, analysis scripts |
 | `Prompts/` | Screening and extraction instructions |
-| `documentation/` | Pipeline narrative and field documentation for reviewers |
 
 ## Requirements
 
@@ -66,7 +65,6 @@ python main_workflow/extraction_2_process_results.py
 
 ```bash
 python main_workflow/analyze_extraction_by_dataset.py
-python main_workflow/dataset_diversity_analysis.py
 ```
 
 ## Reproducibility notes
@@ -75,15 +73,7 @@ python main_workflow/dataset_diversity_analysis.py
 - Extraction **structure and allowed literals** are defined in **`main_workflow/schemas.py`** and mirrored in the prompts.
 - **Model identifier and reasoning settings** are set in `screening_1_prepare_batch.py` and `extraction_1_prepare_batch.py` and should correspond to the manuscript.
 
-## Documentation for reviewers
+## Field definitions and screening rules
 
-| File | Purpose |
-|------|---------|
-| `documentation/PIPELINE.md` | Data flow, intermediate files, and stage descriptions |
-| `documentation/SCHEMA_REFERENCE.md` | Extraction fields (overview) |
-| `documentation/FIELD_REFERENCE.md` | Field definitions and rationale |
-| `documentation/SUPPLEMENTAL_SCHEMA_TABLES.md` | Tabular schema summary (supplement-aligned) |
+Machine-readable extraction constraints are in **`main_workflow/schemas.py`**. Natural-language instructions and the screening target-dataset allowlist are in **`Prompts/extraction_instructions.txt`** and **`Prompts/dataset_screening_instructions.txt`**.
 
-## License
-
-See `LICENSE`.
