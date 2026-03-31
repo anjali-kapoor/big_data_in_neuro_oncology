@@ -1,30 +1,32 @@
 # Preprocessing
 
-Scripts for converting PubMed exports to RIS, deduplicating references, and (optionally) filtering abstracts by search terms.
+Scripts for converting bibliographic exports to RIS (if needed), merging and deduplicating references, and optional term-based filtering of PubMed text dumps.
 
-## Layout
+## Scripts
 
-- `pubmedToRis.py` — PubMed plain-text → RIS (run with your input/output paths; see script docstring).
-- `ris_import_deduplicate.py` — Reads `pubmed_txt/*.ris`, merges, filters complete records, deduplicates, writes CSV and combined RIS **in this directory** (run from `preprocessing/`).
-- `pubmed_txt/extract_abstracts_by_terms.py` — Optional helper to pull lines matching terms from large PubMed text files.
+| Script | Role |
+|--------|------|
+| `pubmedToRis.py` | Converts PubMed plain-text exports to RIS (usage: see module docstring). |
+| `ris_import_deduplicate.py` | Reads `pubmed_txt/*.ris`, merges records, filters to complete entries, deduplicates, writes CSV (and combined RIS) in this directory. **Run from `preprocessing/`.** |
+| `pubmed_txt/extract_abstracts_by_terms.py` | Optional: extract lines matching search terms from large text files. |
 
-## Typical flow
+## Typical sequence
 
-1. Place `.ris` files under `pubmed_txt/` (or adjust folder list inside `ris_import_deduplicate.py`).
-2. From the **`preprocessing/`** directory:
+1. Place `.ris` files in `pubmed_txt/` (or change the folder list in `ris_import_deduplicate.py`).
+2. From `preprocessing/`:
 
    ```bash
    python ris_import_deduplicate.py
    ```
 
-   Produces `all_references_without_duplicates.csv` in `preprocessing/`.
+   Produces `all_references_without_duplicates.csv` here.
 
-3. From the **repository root** (`publication_code/`):
+3. From the **repository root**:
 
    ```bash
    python main_workflow/0_csv_to_jsonl.py
    ```
 
-   Expects `preprocessing/all_references_without_duplicates.csv` and writes `preprocessing/deduped_and_processed_studies.jsonl`.
+   Reads `preprocessing/all_references_without_duplicates.csv` and writes `preprocessing/deduped_and_processed_studies.jsonl`.
 
-Do not commit CSV/JSONL/RIS; add your own data locally.
+Input corpora are supplied by the user; they are not part of this repository.

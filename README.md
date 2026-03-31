@@ -1,46 +1,48 @@
-# Neuro-oncology literature pipeline (publication code)
+# Neuro-oncology literature pipeline — supplementary code
 
-Minimal, reproducible **code skeleton** for the workflow:
+This repository supports reproducibility of the methods in the associated publication: processing bibliographic records through **deduplication**, **LLM-based screening** for analytical use of prespecified data resources, **structured extraction** with schema-validated outputs, and **optional summary analyses**.
 
-**PubMed / RIS → preprocessing → LLM screening → structured extraction → analysis**
+Primary corpora (bibliographic exports, JSONL study files, and model API responses) are **not** included; reviewers can inspect program logic, prompts, and schemas here.
 
-This repository intentionally **excludes**: plotting scripts, auxiliary experiments (e.g. free-form dataset naming), raw or processed study files (JSONL/CSV/RIS), and one-off debugging utilities.
+## Pipeline (high level)
 
-## What is included
+| Stage | Description |
+|--------|-------------|
+| **Preprocessing** | Import references (e.g., PubMed/RIS), deduplicate, normalize to JSONL. |
+| **Screening** | Classify whether each abstract describes cohort-level analytical use of a target dataset (rules and allowlist in `Prompts/dataset_screening_instructions.txt`). |
+| **Extraction** | For included studies, fill structured fields defined in `main_workflow/schemas.py` under instructions in `Prompts/extraction_instructions.txt`. |
+| **Analysis** | Optional scripts: per-dataset summary tables (`analyze_extraction_by_dataset.py`); diversity metrics (`dataset_diversity_analysis.py`). |
 
-| Stage | Contents |
-|--------|----------|
-| **Preprocessing** | `preprocessing/` — PubMed→RIS, RIS dedup to CSV, optional term filter; `main_workflow/0_csv_to_jsonl.py` — CSV → JSONL for screening |
-| **Screening** | `screening_1_prepare_batch.py`, `screening_2_process_results.py`, `Prompts/dataset_screening_instructions.txt` (includes the **TARGET DATASETS** list) |
-| **Extraction** | `extraction_1_prepare_batch.py`, `extraction_2_process_results.py`, `Prompts/extraction_instructions.txt`, `schemas.py` |
-| **Batch API** | `batch_api_helpers.py` — submit, wait, download OpenAI Batch jobs |
-| **Analysis** | `analyze_extraction_by_dataset.py` (text report), `dataset_diversity_analysis.py` (entropy metrics to stdout) |
-| **Docs** | `documentation/` — workflow narrative and schema references |
+## Layout
+
+| Path | Contents |
+|------|----------|
+| `preprocessing/` | Reference import and deduplication scripts |
+| `main_workflow/` | Screening and extraction batch preparation, result merging, schemas, batch API helper, analysis scripts |
+| `Prompts/` | Screening and extraction instructions |
+| `documentation/` | Pipeline narrative and field documentation for reviewers |
 
 ## Requirements
 
 - Python 3.10+
-- `OPENAI_API_KEY` in the environment for Batch API calls
+- Install: `pip install -r requirements.txt`
+- Environment variable `OPENAI_API_KEY` for OpenAI Batch API calls
+
+## Run order
+
+Execute from the repository root. Before downloading batch jobs, create the output directory once:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+mkdir -p "Batch Responses"
 ```
 
-## Run order (from repository root)
-
-Paths below match this repo layout (`publication_code/` = root).
-
-### 1. Build `deduped_and_processed_studies.jsonl`
-
-See `preprocessing/README.md`. You must supply your own PubMed/RIS inputs.
+**1. Preprocessing** — See `preprocessing/README.md`. After `preprocessing/all_references_without_duplicates.csv` exists:
 
 ```bash
 python main_workflow/0_csv_to_jsonl.py
 ```
 
-### 2. Screening
+**2. Screening**
 
 ```bash
 python main_workflow/screening_1_prepare_batch.py
@@ -50,9 +52,7 @@ python main_workflow/batch_api_helpers.py download <batch_id> "Batch Responses/s
 python main_workflow/screening_2_process_results.py
 ```
 
-Produces (by default, next to repo root): `screened_studies.jsonl`, `included_studies.jsonl`, `excluded_studies_minimal.jsonl`.
-
-### 3. Extraction
+**3. Extraction**
 
 ```bash
 python main_workflow/extraction_1_prepare_batch.py
@@ -62,46 +62,28 @@ python main_workflow/batch_api_helpers.py download <batch_id> "Batch Responses/d
 python main_workflow/extraction_2_process_results.py
 ```
 
-Produces `studies_with_extracted_data.jsonl` (merged structured fields).
-
-### 4. Analysis (optional)
+**4. Analysis (optional)**
 
 ```bash
 python main_workflow/analyze_extraction_by_dataset.py
 python main_workflow/dataset_diversity_analysis.py
 ```
 
-## Configuration
+## Reproducibility notes
 
-- Edit the **TARGET DATASETS** section in **`Prompts/dataset_screening_instructions.txt`** if you need to change which resources count as in-scope (that file is what `screening_1_prepare_batch.py` loads; it is not merged from a separate list file).
-- Model IDs and reasoning effort are set in the `*_prepare_batch.py` scripts (defaults match the original project; change if you cite a different model in the paper).
+- The screening **target dataset list** and eligibility rules live in **`Prompts/dataset_screening_instructions.txt`**.
+- Extraction **structure and allowed literals** are defined in **`main_workflow/schemas.py`** and mirrored in the prompts.
+- **Model identifier and reasoning settings** are set in `screening_1_prepare_batch.py` and `extraction_1_prepare_batch.py` and should correspond to the manuscript.
 
-## Schema
+## Documentation for reviewers
 
-Pydantic models live in **`main_workflow/schemas.py`**. Human-readable field tables: **`documentation/SCHEMA_REFERENCE.md`**, **`documentation/FIELD_REFERENCE.md`**, **`documentation/SUPPLEMENTAL_SCHEMA_TABLES.md`**.
-
-## Full narrative
-
-Step-by-step description (including paths and batch commands) is in **`documentation/COMPLETE_WORKFLOW.md`**. Treat the repository root as the directory containing `main_workflow/` and `preprocessing/`.
-
-## Push to GitHub
-
-This folder is already a git repository with an initial commit on **`main`**. After you add a remote:
-
-```bash
-cd publication_code   # or the path where you keep this clone
-git remote add origin https://github.com/YOUR_USER/YOUR_REPO.git
-git push -u origin main
-```
-
-Create an empty repository on GitHub first (no README/license if you are pushing this existing history), or use `gh repo create`. If you copied only the files without `.git`, run `git init` and `git add` / `git commit` once, then add the remote.
-
-Before screening/extraction downloads, create the batch output folder once:
-
-```bash
-mkdir -p "Batch Responses"
-```
+| File | Purpose |
+|------|---------|
+| `documentation/PIPELINE.md` | Data flow, intermediate files, and stage descriptions |
+| `documentation/SCHEMA_REFERENCE.md` | Extraction fields (overview) |
+| `documentation/FIELD_REFERENCE.md` | Field definitions and rationale |
+| `documentation/SUPPLEMENTAL_SCHEMA_TABLES.md` | Tabular schema summary (supplement-aligned) |
 
 ## License
 
-Add your lab’s preferred license before publishing the GitHub repository.
+See `LICENSE`.
